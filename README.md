@@ -1,5 +1,64 @@
 # CI/CD configuration for Cordova using Bitrise
 
+## General config
+
+The `app: envs:` section specifies Environment Variables which are available for every build, every workflow, every step.
+
+- `APP_ID`: The bundle id for the app.
+- `PLATFORMS`: To set the platform to build. It can be `android`, `ios`, or `ios,android`
+
+## Staging workflow
+
+These are the main features of the staging workflow
+
+- It builds an android application apk that we can distribute via email.
+- The application apk is considered a development app, so it should be able to be installed alongside with the production app.
+  To achieve this, we append the stage to the `cl.platan.myapp_staging` suffix to the bundle ID.
+- To identify the development app from the production one, we add some labels to the icon and we append
+  the stage to the app name. `My App - Staging`
+- When you download and install the new build, you can update the existing app. We use the Bitrise build number as the app `versionCode`, this way we have an incremental `versionCode` on each build.
+
+### Staging config
+
+We can define specific configurations for the staging build in the `envs` key under the `staging` workflow.
+
+- `STAGE: staging`
+  The name of the stage
+- `BUILD_CONFIG: debug` the build type pass to the cordova build command
+
+### Debug code signing
+
+#### Android
+
+To be able to update the app each time we trigger a new build, we have to sign the apk with the same certificate.
+Bitrise creates a new environment on each build, so the default debugging keystore is different each time hence we are going to
+get an error if we try to update our app.
+
+To overcome this problem we need to create a common keystore for every build.
+
+Use this command to create the keystore. Use `android` as the keystore and key password.
+
+```
+keytool -genkey -v -keystore my-debug-key.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Then upload the `my-debug-key.keystore` to bitrise in the *Code Signing* section under *generic file storage*. Use `DEBUG_KEYSTORE` as
+the unique ID input.
+
+We need to override the default keystore config in the [workflow config](#staging-config)
+
+```yaml
+- BITRISEIO_ANDROID_KEYSTORE_URL: "$BITRISEIO_DEBUG_KEYSTORE_URL"
+- BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD: android
+- BITRISEIO_ANDROID_KEYSTORE_ALIAS: androiddebugkey
+- BITRISEIO_ANDROID_KEYSTORE_PASSWORD: android
+```
+
+### Trigger map
+
+To trigger this workflow, we need to add some trigger map. We do this in the `trigger_map` key. By default, we start with
+a map that triggers the staging workflow when we push new changes to the `master` branch.
+
 ## Contributing
 
 1. Fork it
