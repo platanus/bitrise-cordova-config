@@ -13,10 +13,11 @@ These are the main features of the staging workflow
 
 - It builds an android application apk that we can distribute via email.
 - The application apk is considered a development app, so it should be able to be installed alongside with the production app.
-  To achieve this, we append the stage to the `cl.platan.myapp_staging` suffix to the bundle ID.
+  To achieve this, we append the stage as a suffix to the bundle id. `cl.platan.myapp_staging`
 - To identify the development app from the production one, we add some labels to the icon and we append
   the stage to the app name. `My App - Staging`
-- When you download and install the new build, you can update the existing app. We use the Bitrise build number as the app `versionCode`, this way we have an incremental `versionCode` on each build.
+- When you download and install the new build, you can update the existing app.
+  We use the Bitrise build number as the app `versionCode`, this way we have an incremental `versionCode` on each build.
 
 ### Staging config
 
