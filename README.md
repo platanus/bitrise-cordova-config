@@ -7,6 +7,20 @@ The `app: envs:` section specifies Environment Variables which are available for
 - `APP_ID`: The bundle id for the app.
 - `PLATFORMS`: To set the platform to build. It can be `android`, `ios`, or `ios,android`
 
+If you want to run a step only when a platform is defined in `PLATFORMS` you can use the `run_if` step property like this.
+
+```
+...
+steps:
+- deploy-to-itunesconnect-deliver:
+    run_if: |-
+      {{ enveq "is_ios" "true"}}
+- google-play-deploy:
+    run_if: |-
+      {{ enveq "is_android" "true"}}
+...
+```
+
 ## Staging workflow
 
 These are the main features of the staging workflow
