@@ -1,5 +1,20 @@
 # CI/CD configuration for Cordova using Bitrise
 
+## Create bitrise project
+
+- Go to www.bitrise.io/dashboard and click on "+ Add new app".
+- Select the repository.
+- Select "no, auto-add SSH key" to give access to the repo.
+- Skip the brach scanning and click on "Configure manually without project scanning"
+- Select the `master` branch and click *next*
+- On *Project build configuration* select *Cordova* and f
+    - Fill the input for the `config.xml` location with `.`
+    - Select `android` platform.
+    - Select *Xamarin, Visual Studio for Mac, Stable channel, on macOS* stack.
+- Register the webhook cliking on *Register the webhook for me!*.
+
+You are done. No you can go to the *workflow* section and start preparing the configuration.
+
 ## General config
 
 The `app: envs:` section specifies Environment Variables which are available for every build, every workflow, every step.
